@@ -1,12 +1,16 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    faraday (0.15.3)
+      multipart-post (>= 1.2, < 3)
+    multipart-post (2.0.0)
     rack (2.0.5)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  faraday
   rack
 
 BUNDLED WITH

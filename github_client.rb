@@ -1,10 +1,19 @@
 require "faraday"
 require "json"
 
-response = Faraday.get 'https://api.github.com/repos/victormours/gitehub/issues', {:direction => 'asc'}
+class GithubClient
 
-issues = JSON.parse(response.body)
+	def titles
+		github_url = 'https://api.github.com/repos/victormours/gitehub/issues'
+		response = Faraday.get(github_url, {:direction => 'asc'})
+		issues = JSON.parse(response.body)
+		
+		titles = []
+		issues.each do |issue|
+			titles += [issue["title"]]
+		end
 
-issues.each do |issue|
-  p issue["title"]
+		titles
+	end
+
 end
