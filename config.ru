@@ -5,14 +5,17 @@ require_relative 'github_client'
 class App
 
   def call(env)
-    path = env["PATH_INFO"]
+    request = Rack::Request.new(env)
+    path = request.path
     path_elements = path.split("/")
 
     user_name = path_elements[1]
     repo_name = path_elements[2]
 
     if path_elements[3..4] == ["issues", "new"]
-      body = new_issue
+      body = new_issue(user_name, repo_name)
+    elsif path_elements[3] == "create_issue"
+      body = create_issue(request)
     else
       body = issues_index(user_name, repo_name)
     end
@@ -34,8 +37,25 @@ class App
     "
   end
 
-  def new_issue
-    "This is the page for a new issue"
+  def new_issue(user_name, repo_name)
+    "
+      This is the page for a new issue
+      <br />
+      <form
+        action='/#{user_name}/#{repo_name}/create_issue'
+        method='post'
+      >
+        <input name='title'></input>
+        <br />
+        <button>Create</button>
+      </form>
+    "
+  end
+
+  def create_issue(request)
+    title = request.params["title"]
+    "We're trying to create your issue #{title}
+    <br />"
   end
 
   def render_issue(issue)

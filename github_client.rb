@@ -7,7 +7,6 @@ class GithubClient
 		github_url = "https://api.github.com/repos/#{user_name}/#{repo_name}/issues"
 		response = Faraday.get(github_url, {:direction => 'asc'})
 		issues = JSON.parse(response.body)
-    puts issues
 
 		issues.map do |issue|
       {
