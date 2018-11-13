@@ -1,4 +1,5 @@
 require 'rack'
+require 'erb'
 
 require_relative 'github_client'
 
@@ -29,29 +30,11 @@ class App
 
     issues = github_client.issues(user_name, repo_name)
 
-
-    "
-      <h1>Issues</h1>
-      <ul>
-         #{issues.map { |i| render_issue(i) }.join}
-      </ul>
-      <a href='/#{user_name}/#{repo_name}/issues/new'>New Issue</a>
-    "
+    render('templates/issues_index.html.erb', binding)
   end
 
   def new_issue(user_name, repo_name)
-    "
-      This is the page for a new issue
-      <br />
-      <form
-        action='/#{user_name}/#{repo_name}/create_issue'
-        method='post'
-      >
-        <input name='title'></input>
-        <br />
-        <button>Create</button>
-      </form>
-    "
+    render('templates/new_issue.html.erb', binding)
   end
 
   def create_issue(request)
@@ -60,11 +43,11 @@ class App
     github_client.create_issue(title)
   end
 
-  def render_issue(issue)
-    "<li>
-      <h2>#{issue["title"]}</h2>
-      <p>opened by #{issue["username"]}</p>
-    </li>"
+  def render(template_name, context)
+    template = File.read(template_name)
+
+    renderer = ERB.new(template)
+    renderer.result(context)
   end
 
 end
