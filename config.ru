@@ -29,6 +29,7 @@ class App
     issues = github_client.issues(user_name, repo_name)
 
     "
+     #{ENV['EXAMPLE_VAR']}
       <h1>Issues</h1>
       <ul>
          #{issues.map { |i| render_issue(i) }.join}
