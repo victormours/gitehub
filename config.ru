@@ -14,13 +14,14 @@ class App
 
     if path_elements[3..4] == ["issues", "new"]
       body = new_issue(user_name, repo_name)
+      [200, { "content-type" => "text/html" }, [body]]
     elsif path_elements[3] == "create_issue"
-      body = create_issue(request)
+      create_issue(request)
+      [302, { "location" => "/victormours/gitehub" }, []]
     else
       body = issues_index(user_name, repo_name)
+      [200, { "content-type" => "text/html" }, [body]]
     end
-
-    [200, { "content-type" => "text/html" }, [body]]
   end
 
   def issues_index(user_name, repo_name)
@@ -28,8 +29,8 @@ class App
 
     issues = github_client.issues(user_name, repo_name)
 
+
     "
-     #{ENV['EXAMPLE_VAR']}
       <h1>Issues</h1>
       <ul>
          #{issues.map { |i| render_issue(i) }.join}
@@ -55,8 +56,8 @@ class App
 
   def create_issue(request)
     title = request.params["title"]
-    "We're trying to create your issue #{title}
-    <br />"
+    github_client = GithubClient.new
+    github_client.create_issue(title)
   end
 
   def render_issue(issue)

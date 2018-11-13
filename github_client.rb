@@ -16,4 +16,15 @@ class GithubClient
 		end
 	end
 
+  def create_issue(title)
+    github_url = "https://api.github.com/repos/victormours/gitehub/issues"
+
+    connection = Faraday.new do |conn|
+      conn.basic_auth('victormours', ENV['GITEHUB_API_KEY'])
+      conn.adapter(Faraday.default_adapter)
+    end
+
+    connection.post(github_url, { title: title }.to_json)
+  end
+
 end
