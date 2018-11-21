@@ -1,9 +1,14 @@
+<style>
+.opener_name {
+  font-style: italic;
+}
+</style>
 <h1>Issues</h1>
 <ul>
   <% issues.each do |issue| %>
     <li>
       <h2><%= issue["title"] %></h2>
-      <p>opened by <%= issue["username"] %></p>
+      <p class="opener_name">opened by <%= issue["username"] %></p>
     </li>
   <% end %>
 </ul>
