@@ -5,6 +5,10 @@ require_relative 'github_client'
 
 class App
 
+  def initialize
+    @dependencies = []
+  end
+
   def call(env)
     request = Rack::Request.new(env)
     path = request.path
@@ -19,6 +23,10 @@ class App
     elsif path_elements[3] == "create_issue"
       create_issue(request)
       [302, { "location" => "/victormours/gitehub" }, []]
+    elsif path_elements[3][/^\d+$/] && path_elements[4] == 'create_dependency'
+      child_issue_number = path_elements[3]
+      create_dependency(request, child_issue_number)
+      [302, { "location" => "/victormours/gitehub/#{child_issue_number}" }, []]
     elsif path_elements[3][/^\d+$/]
       body = issue_show(user_name, repo_name, path_elements[3])
       [200, { "content-type" => "text/html" }, [body]]
@@ -49,12 +57,20 @@ class App
   def issue_show(user_name, repo_name, number)
     github_client = GithubClient.new
     issue = github_client.find_issue(user_name, repo_name, number)
+    issue_list = github_client.issues(user_name, repo_name)
     render('templates/issue_show.html.erb', binding)
+  end
+
+  def create_dependency(request, child_issue_number)
+    parent_issue_number = request.params["issue_number"]
+    @dependencies << {
+      "parent_issue_id" => parent_issue_number,
+      "child_issue_id" => child_issue_number
+    }
   end
 
   def render(template_name, context)
     template = File.read(template_name)
-
     renderer = ERB.new(template)
     renderer.result(context)
   end

@@ -1,1 +1,19 @@
 <h1><%= issue["title"] %></h1>
+
+<%= issue["body"] %>
+<br>
+<form
+action='/<%= user_name %>/<%= repo_name %>/<%= issue["number"] %>/create_dependency'
+method='post'
+>
+  Choose a prerequisite:
+  <select name="issue_number">
+    <% issue_list.each do |issue|%>
+    <option value=<%=issue["number"]%>><%=issue["title"]%></option>
+    <% end %>
+  </select>
+  <button>Submit</button>
+</form>
+</br>
+
+<%= @dependencies %>
