@@ -1,10 +1,12 @@
+require "sqlite3"
+
 require_relative 'github_client'
 
 class GitehubController
 
   def initialize(app)
     @app = app
-    @dependencies = []
+    @db = SQLite3::Database.new "test.db"
   end
 
   def issues_index(user_name, repo_name)
@@ -33,10 +35,11 @@ class GitehubController
 
   def create_dependency(request, child_issue_number)
     parent_issue_number = request.params["issue_number"]
-    @dependencies << {
-      "parent_issue_id" => parent_issue_number,
-      "child_issue_id" => child_issue_number
-    }
+    @db.execute "insert into dependencies values ( #{parent_issue_number}, #{child_issue_number} )"
+    # @dependencies << {
+    #   "parent_issue_id" => parent_issue_number,
+    #   "child_issue_id" => child_issue_number
+    # }
     @app.redirect("/victormours/gitehub/#{child_issue_number}")
   end
 

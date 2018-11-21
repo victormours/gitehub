@@ -16,4 +16,4 @@ method='post'
 </form>
 </br>
 
-<%= @dependencies %>
+<%= @db.execute( "select parent_issue_id from dependencies where child_issue_id = #{issue["number"]}" ).flatten %>
