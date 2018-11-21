@@ -23,11 +23,11 @@ class App
     elsif path_elements[3] == "create_issue"
       create_issue(request)
       [302, { "location" => "/victormours/gitehub" }, []]
-    elsif path_elements[3][/^\d+$/] && path_elements[4] == 'create_dependency'
+    elsif path_elements[3] && path_elements[3][/^\d+$/] && path_elements[4] == 'create_dependency'
       child_issue_number = path_elements[3]
       create_dependency(request, child_issue_number)
       [302, { "location" => "/victormours/gitehub/#{child_issue_number}" }, []]
-    elsif path_elements[3][/^\d+$/]
+    elsif path_elements[3] && path_elements[3][/^\d+$/]
       body = issue_show(user_name, repo_name, path_elements[3])
       [200, { "content-type" => "text/html" }, [body]]
     else
