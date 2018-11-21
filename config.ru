@@ -19,6 +19,9 @@ class App
     elsif path_elements[3] == "create_issue"
       create_issue(request)
       [302, { "location" => "/victormours/gitehub" }, []]
+    elsif path_elements[3][/^\d+$/]
+      body = issue_show(user_name, repo_name, path_elements[3])
+      [200, { "content-type" => "text/html" }, [body]]
     else
       body = issues_index(user_name, repo_name)
       [200, { "content-type" => "text/html" }, [body]]
@@ -41,6 +44,12 @@ class App
     title = request.params["title"]
     github_client = GithubClient.new
     github_client.create_issue(title)
+  end
+
+  def issue_show(user_name, repo_name, number)
+    github_client = GithubClient.new
+    issue = github_client.find_issue(user_name, repo_name, number)
+    render('templates/issue_show.html.erb', binding)
   end
 
   def render(template_name, context)

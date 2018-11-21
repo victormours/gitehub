@@ -7,10 +7,9 @@
 <ul>
   <% issues.each do |issue| %>
     <li>
-      <h2><%= issue["title"] %></h2>
+      <h2><a href='/<%= user_name %>/<%= repo_name %>/<%= issue["number"] %>'><%= issue["title"] %></a></h2>
       <p class="opener_name">opened by <%= issue["username"] %></p>
     </li>
   <% end %>
 </ul>
 <a href='/<%= user_name %>/<%= repo_name %>/issues/new'>New Issue</a>
-

@@ -11,7 +11,8 @@ class GithubClient
 		issues.map do |issue|
       {
         "title" => issue["title"],
-        "username" => issue["user"]["login"]
+        "username" => issue["user"]["login"],
+				"number" => issue["number"]
       }
 		end
 	end
@@ -26,5 +27,11 @@ class GithubClient
 
     connection.post(github_url, { title: title }.to_json)
   end
+
+	def find_issue(user_name, repo_name, number)
+		github_url = "https://api.github.com/repos/#{user_name}/#{repo_name}/issues/#{number}"
+		response = Faraday.get(github_url)
+		issue = JSON.parse(response.body)
+	end
 
 end
